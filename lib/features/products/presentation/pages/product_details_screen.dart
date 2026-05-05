@@ -72,7 +72,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
         behavior: SnackBarBehavior.floating,
         action: SnackBarAction(
           label: 'View Cart',
-          onPressed: () => context.push('/cart'),
+          onPressed: () => context.go('/cart'),
         ),
       ),
     );
@@ -80,8 +80,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
 
   void _buyNow() {
     final singleItem = CartItem(product: widget.product, quantity: _quantity);
-    Navigator.push(
-      context,
+    // Use rootNavigator to push above GoRouter and avoid GlobalKey conflicts
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (_) => BlocProvider.value(
           value: context.read<AddressBloc>(),
@@ -134,7 +134,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                     child: ScaleTransition(
                       scale: _cartScale,
                       child: GestureDetector(
-                        onTap: () => context.push('/cart'),
+                        onTap: () => context.go('/cart'),
                         child: Container(
                           margin: const EdgeInsets.only(right: 8),
                           width: 36,
@@ -388,30 +388,49 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
         ),
         child: Row(
           children: [
-            // Add to Cart
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: _addToCart,
-                icon: const Icon(Icons.shopping_cart_outlined, size: 18),
-                label: const Text('Add to Cart',
-                    style:
-                        TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  side: BorderSide(color: primary, width: 1.5),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(28)),
+            // ── Add to Cart – icon-only filled square ──────────────────────
+            ScaleTransition(
+              scale: _cartScale,
+              child: GestureDetector(
+                onTap: _addToCart,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: 54,
+                  height: 54,
+                  decoration: BoxDecoration(
+                    color: _cartAdded ? primary : primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: primary,
+                      width: 1.5,
+                    ),
+                    boxShadow: _cartAdded
+                        ? [
+                            BoxShadow(
+                                color: primary.withOpacity(0.3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4))
+                          ]
+                        : [],
+                  ),
+                  child: Icon(
+                    _cartAdded
+                        ? Icons.shopping_cart
+                        : Icons.shopping_cart_outlined,
+                    size: 22,
+                    color: _cartAdded ? Colors.white : primary,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
-            // Buy Now
+            const SizedBox(width: 14),
+
+            // ── Buy Now – full gradient pill ───────────────────────────────
             Expanded(
-              flex: 2,
               child: Container(
-                height: 50,
+                height: 54,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(16),
                   gradient: LinearGradient(
                     colors: [primary, primary.withBlue(220)],
                     begin: Alignment.topLeft,
@@ -419,26 +438,29 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen>
                   ),
                   boxShadow: [
                     BoxShadow(
-                        color: primary.withOpacity(0.35),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4))
+                        color: primary.withOpacity(0.4),
+                        blurRadius: 14,
+                        offset: const Offset(0, 5))
                   ],
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: _buyNow,
-                    borderRadius: BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(16),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.bolt_rounded, color: Colors.white, size: 18),
-                        SizedBox(width: 6),
-                        Text('Buy Now',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold)),
+                        Icon(Icons.bolt_rounded, color: Colors.white, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Buy Now',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.3),
+                        ),
                       ],
                     ),
                   ),

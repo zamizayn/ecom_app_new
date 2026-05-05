@@ -32,6 +32,7 @@ abstract class AuthState extends Equatable {
 }
 
 class AuthInitial extends AuthState {}
+
 class AuthLoading extends AuthState {}
 
 class OtpSent extends AuthState {
@@ -42,6 +43,7 @@ class OtpSent extends AuthState {
 }
 
 class Authenticated extends AuthState {}
+
 class Unauthenticated extends AuthState {}
 
 class AuthError extends AuthState {
@@ -70,7 +72,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<VerifyOtpRequested>((event, emit) async {
       emit(AuthLoading());
       await Future.delayed(const Duration(seconds: 1)); // Simulate API delay
-      if (event.otp.length == 4) { // Accept any 4 digit code for mock
+      if (event.otp.length == 6) {
+        // Accept any 4 digit code for mock
         emit(Authenticated());
       } else {
         // Fall back to OtpSent so UI doesn't break back out to login entirely if we wanted that,

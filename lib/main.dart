@@ -8,6 +8,7 @@ import 'package:ecom/features/cart/presentation/bloc/cart_bloc.dart';
 import 'package:ecom/features/products/presentation/bloc/products_bloc.dart';
 import 'package:ecom/features/search/presentation/bloc/search_bloc.dart';
 import 'package:ecom/features/wishlist/presentation/bloc/wishlist_bloc.dart';
+import 'package:ecom/features/checkout/bloc/address_bloc.dart';
 
 import 'package:ecom/features/products/data/repositories/mock_product_repository.dart';
 
@@ -40,6 +41,9 @@ class EcomApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => SearchBloc(repository: productRepository),
+        ),
+        BlocProvider(
+          create: (context) => AddressBloc(),
         ),
       ],
       child: MaterialApp.router(

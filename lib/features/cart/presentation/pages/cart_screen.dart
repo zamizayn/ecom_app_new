@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_event.dart';
 import '../bloc/cart_state.dart';
+import 'package:ecom/features/checkout/bloc/address_bloc.dart';
+import 'package:ecom/features/checkout/pages/address_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -210,7 +212,19 @@ class CartScreen extends StatelessWidget {
                         width: double.infinity,
                         height: 54,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider.value(
+                                  value: context.read<AddressBloc>(),
+                                  child: AddressScreen(
+                                    cartItems: state.items,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24),

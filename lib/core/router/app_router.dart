@@ -7,12 +7,12 @@ import 'package:ecom/features/products/presentation/pages/product_details_screen
 import 'package:ecom/features/products/presentation/pages/products_listing_screen.dart';
 import 'package:ecom/features/cart/presentation/pages/cart_screen.dart';
 import 'package:ecom/shared/models/product.dart';
-
 import 'package:ecom/features/auth/presentation/pages/otp_screen.dart';
 import 'package:ecom/core/presentation/pages/main_layout_screen.dart';
 import 'package:ecom/features/wishlist/presentation/pages/wishlist_screen.dart';
 import 'package:ecom/features/profile/presentation/pages/profile_screen.dart';
 import 'package:ecom/features/chat/presentation/pages/chat_screen.dart';
+import 'package:ecom/features/checkout/pages/order_success_screen.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> _rootNavigatorKey =
@@ -83,6 +83,19 @@ class AppRouter {
           return ProductsListingScreen(
             title: args.title,
             allProducts: args.products,
+          );
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/order-success',
+        builder: (context, state) {
+          final args = state.extra as OrderSuccessArgs;
+          return OrderSuccessScreen(
+            orderId: args.orderId,
+            address: args.address,
+            cartItems: args.cartItems,
+            total: args.total,
           );
         },
       ),
